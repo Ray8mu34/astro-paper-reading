@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "astro-paper-reading"
+version = "1.1.0"
+description = "Reader-first astronomy explanations with separate scientific records and offline figures"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "scipy>=1.10", "mistune>=3,<4", "PyYAML>=6", "jsonschema>=4", "latex2mathml>=3.77,<4"]
+[project.optional-dependencies]
+test = ["pytest>=8", "playwright>=1.40", "beautifulsoup4>=4.12", "pypdf>=5"]
+[tool.setuptools.packages.find]
+include = ["astro_xray*"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["browser: requires a local Chromium executable"]

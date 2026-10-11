@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Astro Paper X-Ray shared scientific state and reader edition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "paper", "coverage", "sources", "question", "concepts", "claims", "parameters", "assumptions", "sections", "unknowns", "reproduction", "artifacts"],
+  "properties": {
+    "schema_version": {"enum": ["1.0", "1.1"]},
+    "reader": {
+      "type": "object", "additionalProperties": false,
+      "required": ["overview", "roadmap", "focus"],
+      "properties": {
+        "overview": {"type": "string", "minLength": 1},
+        "roadmap": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["section", "title", "argument", "focus", "source_id", "page"],
+          "properties": {
+            "section": {"type": "string", "minLength": 1},
+            "title": {"type": "string", "minLength": 1},
+            "argument": {"type": "string", "minLength": 1},
+            "focus": {"type": "string", "minLength": 1},
+            "source_id": {"$ref": "#/$defs/id"},
+            "page": {"type": "integer", "minimum": 1}
+          }
+        }},
+        "focus": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["section_id", "question", "why"],
+          "properties": {
+            "section_id": {"$ref": "#/$defs/id"},
+            "question": {"type": "string", "minLength": 1},
+            "why": {"type": "string", "minLength": 1}
+          }
+        }}
+      }
+    },
+    "visuals": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "section_id", "placement", "question", "why", "alternative", "caption", "basis"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["image", "interactive"]},
+        "section_id": {"$ref": "#/$defs/id"},
+        "placement": {"enum": ["include", "omit"]},
+        "question": {"type": "string", "minLength": 1},
+        "why": {"type": "string", "minLength": 1},
+        "alternative": {"type": "string", "minLength": 1},
+        "caption": {"type": "string"},
+        "basis": {"enum": ["observed", "author-model", "author-posterior", "analytic", "numerical", "schematic", "synthetic"]},
+        "interaction_gain": {"type": "string"},
+        "image": {"type": "string", "minLength": 1},
+        "fragment": {"type": "string", "minLength": 1},
+        "styles": {"type": "string", "minLength": 1},
+        "script": {"type": "string", "minLength": 1},
+        "data": {"type": "string", "minLength": 1},
+        "data_id": {"$ref": "#/$defs/id"}
+      }
+    }},
+    "status": {"enum": ["draft", "ready"]},
+    "mode": {"enum": ["quick", "deep-md", "interactive-html", "critical-review"]},
+    "paper": {
+      "type": "object", "additionalProperties": false,
+      "required": ["title", "input", "version", "kind"],
+      "properties": {
+        "title": {"type": "string"}, "input": {"type": "string"},
+        "version": {"type": "string"},
+        "kind": {"enum": ["observation", "theory", "simulation", "method", "mixed", "unknown"]}
+      }
+    },
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["level", "read", "missing", "teaching_only"],
+      "properties": {
+        "level": {"enum": ["none", "abstract", "partial", "full"]},
+        "read": {"$ref": "#/$defs/strings"}, "missing": {"$ref": "#/$defs/strings"},
+        "teaching_only": {"type": "boolean"}
+      }
+    },
+    "sources": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "url", "accessed", "note"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "title": {"type": "string", "minLength": 1},
+        "url": {"type": "string"}, "accessed": {"type": "boolean"},
+        "note": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    }},
+    "question": {"type": "string"},
+    "concepts": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["id", "definition", "depends_on"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "definition": {"type": "string"}, "depends_on": {"$ref": "#/$defs/strings"}}
+    }},
+    "claims": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "text", "evidence", "assumptions"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "kind": {"enum": ["R", "D", "I", "T", "S"]},
+        "text": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+        "assumptions": {"$ref": "#/$defs/strings"}
+      },
+      "allOf": [{"if": {"properties": {"kind": {"const": "R"}}}, "then": {"properties": {"evidence": {"minItems": 1}}}}]
+    }},
+    "parameters": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["symbol", "value", "unit", "kind", "uncertainty", "frame", "evidence"],
+      "properties": {
+        "symbol": {"type": "string", "minLength": 1}, "value": {"type": ["number", "null"]},
+        "unit": {"type": "string", "minLength": 1}, "kind": {"enum": ["R", "D", "I", "T", "S"]},
+        "uncertainty": {"type": "string"}, "frame": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}}
+      },
+      "allOf": [{"if": {"properties": {"kind": {"const": "R"}}}, "then": {"properties": {"evidence": {"minItems": 1}}}}]
+    }},
+    "assumptions": {"$ref": "#/$defs/strings"},
+    "sections": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "role", "title", "markdown", "claim_ids"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "role": {"enum": ["background", "method", "derivation", "evidence", "limitations", "review"]},
+        "title": {"type": "string", "minLength": 1}, "markdown": {"type": "string", "minLength": 1},
+        "claim_ids": {"$ref": "#/$defs/strings"}, "module": {"enum": ["single-lens", "binary-lens"]},
+        "audience": {"enum": ["reader", "appendix", "internal"]}
+      }
+    }},
+    "unknowns": {"$ref": "#/$defs/strings"},
+    "reproduction": {
+      "type": "object", "additionalProperties": false, "required": ["status", "notes"],
+      "properties": {"status": {"enum": ["not-run", "teaching", "partial", "reproduced"]}, "notes": {"$ref": "#/$defs/strings"}}
+    },
+    "artifacts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["markdown", "html"],
+      "properties": {"markdown": {"type": "string", "minLength": 1}, "html": {"type": "string", "minLength": 1}, "notes": {"type": "string", "minLength": 1}}
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "strings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "evidence": {
+      "type": "object", "additionalProperties": false, "required": ["source_id", "locator"],
+      "properties": {"source_id": {"$ref": "#/$defs/id"}, "locator": {"type": "string", "minLength": 1}}
+    }
+  }
+}

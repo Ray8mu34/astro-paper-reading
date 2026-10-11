@@ -1,0 +1,414 @@
+{
+  "schema_version": "1.0",
+  "status": "ready",
+  "mode": "interactive-html",
+  "paper": {
+    "title": "OGLE-2016-BLG-1928：从有限源光变到质量边界",
+    "input": "https://arxiv.org/abs/2009.12377v2",
+    "version": "arXiv v2, 2020-10-20",
+    "kind": "observation"
+  },
+  "coverage": {
+    "level": "full",
+    "read": [
+      "PDF pp.1–8: abstract, Sections 1–6, Figures 1–4, Tables 1–3, acknowledgements and bibliography"
+    ],
+    "missing": [
+      "Raw OGLE/KMT photometry and fit chains",
+      "Full texts of the cited literature were not read"
+    ],
+    "teaching_only": true
+  },
+  "sources": [
+    {
+      "id": "mroz2020",
+      "title": "Mróz et al. (2020), arXiv:2009.12377v2",
+      "url": "https://arxiv.org/pdf/2009.12377v2",
+      "accessed": true,
+      "note": "PDF pp.1–8 read; locators use PDF page numbers, not extraction line numbers",
+      "sha256": "43d27c6bf6a86e613979b303ec821e579ac42903e51ae79b51e0165f8cf69621"
+    },
+    {
+      "id": "teaching-code",
+      "title": "Recovered deterministic teaching generator",
+      "url": "",
+      "accessed": true,
+      "note": "Local scripts/build_data.py and astro_xray/lensing.py; seed 1928"
+    }
+  ],
+  "question": "如何从一个短而低幅的增亮事件提取角尺度，又为什么有限源信息仍不足以唯一确定透镜质量和是否存在远距离宿主？",
+  "concepts": [
+    {
+      "id": "einstein",
+      "definition": "θE: 透镜的角 Einstein 尺度",
+      "depends_on": []
+    },
+    {
+      "id": "source-size",
+      "definition": "ρ=θ*/θE: 源角半径归一化",
+      "depends_on": [
+        "einstein"
+      ]
+    },
+    {
+      "id": "finite-flux",
+      "definition": "对源盘的放大率加权积分",
+      "depends_on": [
+        "source-size"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "reported-event",
+      "kind": "R",
+      "text": "固定 fs=1 的单透镜解报告 tE=0.0288 天、u0=0.59、rho=3.39。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.4, Table 1, point lens fs=1 column"
+        }
+      ],
+      "assumptions": []
+    },
+    {
+      "id": "reported-size",
+      "kind": "R",
+      "text": "角 Einstein 半径为 0.842±0.064 μas；相对自行为 10.6±1.0 mas/yr。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF pp.5–6, Table 3 and Eqs. (3)–(4)"
+        }
+      ],
+      "assumptions": []
+    },
+    {
+      "id": "reported-limb",
+      "kind": "R",
+      "text": "论文单透镜模型采用 I 带线性临边昏暗 Γ=0.46。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.3, Section 3; p.5, Table 3"
+        }
+      ],
+      "assumptions": []
+    },
+    {
+      "id": "reported-limit",
+      "kind": "R",
+      "text": "假定 0.3 太阳质量宿主且 pi_rel=0.1 mas 时，投影分离的 90% 下限为 8.0 au；这不排除更远宿主。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.5, Section 4, host injection study; p.7, Section 6"
+        }
+      ],
+      "assumptions": []
+    },
+    {
+      "id": "reported-binary",
+      "kind": "R",
+      "text": "候选二元解 s=18.7；Δχ²=44.2 的改善受单夜/单台站及低水平波动限制，作者未认定为可靠宿主证据。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF pp.4–5, Table 1, Figure 2 and Section 4"
+        }
+      ],
+      "assumptions": []
+    },
+    {
+      "id": "source-calibration",
+      "kind": "R",
+      "text": "θ* 的标定采用红团簇消光及颜色表面亮度关系；放大期缺少 V 带观测，源色取基线对象颜色。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF pp.5–6, Section 5, Figure 3 and Eq. (3)"
+        }
+      ],
+      "assumptions": []
+    },
+    {
+      "id": "real-sampling",
+      "kind": "R",
+      "text": "真实放大段只有 15 点（OGLE 11、KMT 4），下降段覆盖不完整；与这里的 77 模拟点不同。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.7, Section 6; p.3, Figure 1"
+        }
+      ],
+      "assumptions": []
+    },
+    {
+      "id": "uniform-integral",
+      "kind": "D",
+      "text": "均匀圆源的中心放大率是 sqrt(rho²+4)/rho，有限源消除了点源中心的发散。",
+      "evidence": [],
+      "assumptions": [
+        "均匀面亮度，静态单个点质量透镜"
+      ]
+    },
+    {
+      "id": "synthetic-points",
+      "kind": "T",
+      "text": "全部 77 个点由 seed=1928、Γ=0、sigma=0.009 的教学模型生成；不是 OGLE 或 KMT 测光。",
+      "evidence": [
+        {
+          "source_id": "teaching-code",
+          "locator": "scripts/build_data.py observations block; demo-data.json observations.kind"
+        }
+      ],
+      "assumptions": [
+        "教学参数近似取论文中心值，没有拟合真实数据"
+      ]
+    },
+    {
+      "id": "conditional-mass",
+      "kind": "I",
+      "text": "选定相对视差才可将角 Einstein 半径转换为条件质量；图形本身不能测得距离或质量。",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.6, Eq. (5)"
+        }
+      ],
+      "assumptions": [
+        "指定 pi_rel；thetaE 以 mas 转换"
+      ]
+    },
+    {
+      "id": "binary-atlas",
+      "kind": "T",
+      "text": "20 组离散 s,q 的焦散属于独立教学图谱，源轨迹是示意；没有二元放大率输出。",
+      "evidence": [
+        {
+          "source_id": "teaching-code",
+          "locator": "astro_xray/lensing.py critical_curves; scripts/build_data.py atlas"
+        }
+      ],
+      "assumptions": [
+        "静态薄透镜，总质量 Einstein 单位，质心原点"
+      ]
+    }
+  ],
+  "parameters": [
+    {
+      "symbol": "t_E",
+      "value": 0.0288,
+      "unit": "day",
+      "kind": "R",
+      "uncertainty": "+0.0024 / −0.0016",
+      "frame": "论文固定 fs=1 的单透镜解",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.4, Table 1"
+        }
+      ]
+    },
+    {
+      "symbol": "u_0",
+      "value": 0.59,
+      "unit": "dimensionless",
+      "kind": "R",
+      "uncertainty": "+0.58 / −0.42",
+      "frame": "论文固定 fs=1 的单透镜解",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.4, Table 1"
+        }
+      ]
+    },
+    {
+      "symbol": "rho",
+      "value": 3.39,
+      "unit": "dimensionless",
+      "kind": "R",
+      "uncertainty": "+0.10 / −0.11",
+      "frame": "论文固定 fs=1 的单透镜解",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.4, Table 1"
+        }
+      ]
+    },
+    {
+      "symbol": "f_s",
+      "value": 1.0,
+      "unit": "dimensionless",
+      "kind": "R",
+      "uncertainty": "fixed",
+      "frame": "论文固定 fs=1 的单透镜解",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF pp.3–4, Section 3 and Table 1"
+        }
+      ]
+    },
+    {
+      "symbol": "Gamma (paper)",
+      "value": 0.46,
+      "unit": "dimensionless",
+      "kind": "R",
+      "uncertainty": "adopted",
+      "frame": "论文固定 fs=1 的单透镜解",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.5, Table 3"
+        }
+      ]
+    },
+    {
+      "symbol": "theta_E",
+      "value": 0.842,
+      "unit": "μas",
+      "kind": "R",
+      "uncertainty": "±0.064",
+      "frame": "论文固定 fs=1 的单透镜解",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF pp.5–6, Table 3 and Eq. (3)"
+        }
+      ]
+    },
+    {
+      "symbol": "theta_star",
+      "value": 2.85,
+      "unit": "μas",
+      "kind": "R",
+      "uncertainty": "±0.20",
+      "frame": "论文固定 fs=1 的单透镜解",
+      "evidence": [
+        {
+          "source_id": "mroz2020",
+          "locator": "PDF p.5, Table 3"
+        }
+      ]
+    },
+    {
+      "symbol": "Gamma (demo)",
+      "value": 0.0,
+      "unit": "dimensionless",
+      "kind": "T",
+      "uncertainty": "teaching assumption",
+      "frame": "均匀源教学模型",
+      "evidence": []
+    }
+  ],
+  "assumptions": [
+    "Teaching single-lens Γ=0, static rectilinear trajectory",
+    "Nonnegative blending flux; fs∈[0,1]",
+    "Single-lens θE and binary total-mass θE are different units"
+  ],
+  "sections": [
+    {
+      "id": "context",
+      "role": "background",
+      "title": "短事件告诉我们什么？",
+      "markdown": "微透镜把一个暗透镜的质量尺度转成背景源的亮度变化。最朴素的读法是“持续时间短，所以质量小”。但时间还依赖相对运动与几何；它只能建立候选解释，不能独立测量质量。这里从源角半径、Einstein 角半径、穿越速度到通量建立可检查的链条。\n\n我们以 OGLE-2016-BLG-1928 为研究背景，已读取 arXiv:2009.12377v2。论文报告的参数见末尾表及证据账本；下文均匀源演示和焦散图谱是教学模型。真实观测与似然拟合没有纳入本包，不能从教学图评估论文模型的拟合优劣。",
+      "claim_ids": [
+        "reported-event",
+        "synthetic-points"
+      ]
+    },
+    {
+      "id": "point-lens",
+      "role": "derivation",
+      "title": "从透镜方程到点源放大率",
+      "markdown": "采用静态薄透镜、单个点质量与几何光学。角坐标除以该透镜的 θE；一维径向透镜方程是 u=x−1/x，两个像的位置为\n\n$$\nx_{\\pm}=\\frac{u\\pm\\sqrt{u^2+4}}{2}.\n$$\n\n面亮度守恒，把两个像的绝对面积 Jacobian 相加得到\n\n$$\nA_{\\mathrm{PSPL}}(u)=\\frac{u^2+2}{u\\sqrt{u^2+4}},\\qquad u(t)=\\sqrt{u_0^2+\\left(\\frac{t-t_0}{t_E}\\right)^2}.\n$$\n\n这个式子在 u=1 给出 3/√5≈1.34164，在 u 很大时回到 1，在 u→0 时发散。它不能直接用于源盘覆盖透镜时的通量：真实扩展源的不同位置对应不同 u，必须对面亮度加权平均。",
+      "claim_ids": [
+        "uniform-integral"
+      ]
+    },
+    {
+      "id": "finite-source",
+      "role": "method",
+      "title": "有限源积分：峰高与持续时间为何改变",
+      "markdown": "定义 ρ=θ*/θE。对均匀源盘，积分变量 y 是源面角坐标；相对于透镜的源心为 u⃗。归一化面积 πρ²保证无透镜时放大率为 1：\n\n$$\nA_{\\mathrm{FS}}(u,\\rho)=\\frac{1}{\\pi\\rho^2}\\int_{|\\boldsymbol{y}-\\boldsymbol{u}|\\leq\\rho} A_{\\mathrm{PSPL}}(|\\boldsymbol{y}|)\\,\\mathrm{d}^2y.\n$$\n\n源心在透镜上时，以透镜为原点的极坐标面积元消掉点源的 1/r 奇点，积分可直接算出\n\n$$\nA_{\\mathrm{FS}}(0,\\rho)=\\frac{2}{\\rho^2}\\int_0^\\rho\\frac{r^2+2}{\\sqrt{r^2+4}}\\,\\mathrm{d}r=\\frac{\\sqrt{\\rho^2+4}}{\\rho}.\n$$\n\nρ=3.39 时中心放大率为 **1.161062**；这是中心对齐的算例，不等于 u₀=0.59 的精确峰值。ρ≫1 时 A−1≈2/ρ²。若 u₀<ρ，源心轨迹到达盘边的几何时长是 2tE√(ρ²−u₀²)，而 t*=ρtE 是源半径穿越时间。教学初值 t*=0.097632 天、约 140.59 分钟；几何穿盘时长约 0.192 天，不等于放大曲线有严格的起止点。\n\n混光把放大率变成 F/Fbase=fs A+1−fs。下图改变 fs 时，几何和放大率不变，通量幅度被压低。改变 tE 则把相同 τ 上的曲线在以天计的横轴上伸缩。先把 ρ 改为 0，再逐步恢复至 3.39，观察点源尖峰如何成为宽而低的有限源事件。点源虚线若高于纵轴会明确提示。\n\n**图中所有测光点均为模拟。** 其噪声和参数固定，不会随着控件变化重新生成。模型改变后与点的失配是预期结果；这不是拟合器。论文的 Γ=0.46 与此处 Γ=0 不同。原文 p.7 说明真实放大段只有 15 点（OGLE 11、KMT 4），下降段覆盖不完整，模拟的较密采样不能代替这项观测限制。",
+      "claim_ids": [
+        "uniform-integral",
+        "synthetic-points",
+        "reported-limb",
+        "real-sampling"
+      ],
+      "module": "single-lens"
+    },
+    {
+      "id": "evidence-read",
+      "role": "evidence",
+      "title": "证据、参数与模型边界",
+      "markdown": "参数账本保留论文的固定混光单透镜解及其不对称不确定性（PDF p.4，Table 1）。这些估计值有协方差，滑块逐个改变它们不是联合后验采样。θE 和 μrel 的定位为 Table 3、式 (3)–(4)。论文用临边昏暗模型，演示用均匀盘，两者不能当作逐点一致的复现。\n\nθ* 的估计链是：红团簇作消光与亮度参照，源的去红化颜色转到颜色表面亮度关系，再用 θE=θ*/ρ 得到角尺度。原文 pp.5–6 的 Figure 3 和 Section 5 依赖“源与红团簇消光相同”及“源色等于基线对象颜色”的假设。放大期没有 V 带测量，使后一个假设成为系统误差边界；有限源曲线本身不会直接测出 θ*。因此提高时间采样不能单独消除源表面亮度的不确定性。\n\n下一个模块帮助解释双透镜会引入什么结构。它的参数域比论文候选模型小；论文的 s≈18.7 不在图谱内。我们不会把一个近间距焦散图放在论文模型名下，也不会用单透镜光变替代二元光变。",
+      "claim_ids": [
+        "reported-event",
+        "reported-size",
+        "reported-binary",
+        "source-calibration"
+      ]
+    },
+    {
+      "id": "binary-geometry",
+      "role": "method",
+      "title": "双透镜的几何：为何需要另一种模型",
+      "markdown": "双透镜坐标使用总质量 θE 与质心原点。令 ε₁=1/(1+q)，ε₂=q/(1+q)，z₁=−sε₂，z₂=sε₁。复透镜方程及 Jacobian 为\n\n$$\n\\zeta=z-\\frac{\\epsilon_1}{\\bar z-z_1}-\\frac{\\epsilon_2}{\\bar z-z_2},\\qquad \\det J=1-\\left|\\frac{\\epsilon_1}{(z-z_1)^2}+\\frac{\\epsilon_2}{(z-z_2)^2}\\right|^2.\n$$\n\n把括号内复数设为 e^{iφ}，乘去分母得到四次多项式。每个相位解出的四个根落在像平面的临界曲线上；代入透镜方程才得到源平面的焦散。两组曲线不能在同一个平面当作同一种位置。端点根序可能置换，逐分支强行闭合会画出不存在的直线；绘图使用恢复数据的 end_permutation。\n\n先在 q=0.001 的 close/wide 对照中选择“中心视窗”，观察中心结构，再恢复全图，确认外部焦散并不相同。然后提高 q，检验小质量比的直觉在哪些地方失效。两幅源面图共用坐标范围，中央裁窗会明确说明可能遗漏外部结构。虚线角度和偏距只定义一条示意轨迹；它不计算放大率，也不构成事件模型。",
+      "claim_ids": [
+        "binary-atlas"
+      ],
+      "module": "binary-lens"
+    },
+    {
+      "id": "mass-scale",
+      "role": "derivation",
+      "title": "角尺度为何仍不能给出唯一质量",
+      "markdown": "微透镜基本关系把角尺度与质量、相对视差联系起来。给定 θE 的中心值，只能进行条件换算：\n\n$$\n\\theta_E^2=\\kappa M\\pi_{\\mathrm{rel}},\\qquad M=\\frac{\\theta_E^2}{\\kappa\\pi_{\\mathrm{rel}}},\\qquad \\kappa=8.144\\;\\mathrm{mas}/M_\\odot.\n$$\n\n把 0.842 μas 先换成 0.000842 mas。教学条件 πrel=0.1 mas 时，独立计算 M=0.2898 M⊕；改为 0.016 mas，则 M=1.8115 M⊕。这两个值来自指定距离几何，没有概率权重，也没有误差传播，不能称为质量测量或后验区间。\n\n同样，μrel=(0.000842 mas)/(0.0288 day)×365.25 day/yr=10.6785 mas/yr。这个量纲检查使用中心值，并不重新估计论文的误差。地心与日心自行转换仍需观测者运动信息，演示不实现这一步。",
+      "claim_ids": [
+        "conditional-mass",
+        "reported-size"
+      ]
+    },
+    {
+      "id": "review",
+      "role": "review",
+      "title": "该如何检查“没有宿主”的解释",
+      "markdown": "阅读负结果时应先识别排除域。论文的 8.0 au 结论依赖给定宿主质量、距离几何、注入轨迹与检测阈值，不能改写成任何距离上都没有宿主。候选二元模型的 Δχ² 改善也不能单独转成发现显著性；原文讨论了数据波动与跨台站一致性。\n\n可操作的后续检验是取得带台站标签、误差标定与观测时间的原始测光，比较改善分布是否由某一夜驱动，并检验替代噪声模型。要复现宿主排除界，需要实际的二元有限源测光求解器及注入恢复，而非仅有焦散图。这些检验尚未执行；此报告没有提供新的观测结论。",
+      "claim_ids": [
+        "reported-limit",
+        "reported-binary"
+      ]
+    },
+    {
+      "id": "limitations",
+      "role": "limitations",
+      "title": "数值来源、近似与未完成工作",
+      "markdown": "单透镜表来自恢复源码的透镜中心环积分：完整圆环解析积分，部分环自适应积分。浏览器仅沿 u 线性插值，u∈[0,10]、ρ∈{0.05,0.2,0.5,1,3.39}；ρ=0 使用点源解析式。抽样插值误差预算为 5×10⁻⁴，抽样通过不证明全域误差上界。\n\n双透镜图谱包含 q∈{0.001,0.01,0.1,1} 与五个 s 的 20 组数值结果。Jacobian 残差和映射一致性可以检查方程，却不能单独认证任意连续参数域的拓扑。数值计算、插值与轨迹示意分别标注；二元光变、临边昏暗、视差、轨道运动和 MCMC 均不在 V1 范围。\n\n本地保存了已读取的论文 PDF 与逐页文本；图表定位曾对照 PDF 页图，文本提取出现过图形 XObject 警告。没有读取参考文献的全文，也没有声称独立复现论文的观测归约。教学数据生成脚本、共享状态与当前验收记录随项目交付；HTML 本身嵌入数据、样式、代码和 MathML，可离线打开。",
+      "claim_ids": [
+        "synthetic-points",
+        "binary-atlas"
+      ]
+    }
+  ],
+  "unknowns": [
+    "πrel、透镜距离与唯一质量未知",
+    "更远宿主未排除",
+    "没有重新计算论文似然、后验或检测效率"
+  ],
+  "reproduction": {
+    "status": "teaching",
+    "notes": [
+      "77 synthetic points; no real photometry fit",
+      "Uniform finite-source and critical-curve teaching calculations only"
+    ]
+  },
+  "artifacts": {
+    "markdown": "report.md",
+    "html": "report.html"
+  }
+}

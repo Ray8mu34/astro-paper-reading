@@ -1,0 +1,6 @@
+# Preserve scientific data and deterministic generated reports byte-for-byte.
+*.json -text whitespace=cr-at-eol
+**/report.html -text whitespace=cr-at-eol
+**/report.md -text whitespace=cr-at-eol
+**/analysis-notes.md -text whitespace=cr-at-eol
+*.png -text

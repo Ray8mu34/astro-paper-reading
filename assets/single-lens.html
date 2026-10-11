@@ -1,0 +1,19 @@
+<section class="experiment" id="single-lens" aria-labelledby="single-heading">
+  <div class="figure-heading"><h3 id="single-heading">有限源：几何如何变成光变？</h3><span class="basis">单透镜 · 均匀圆源 · 教学模拟</span></div>
+  <p class="instruction">先移动时间，观察源盘与光变位置联动；再调节 ρ，比较有限源积分与虚线点源近似。测光点保持原始模拟状态，不随控件重新拟合。</p>
+  <div class="plots">
+    <figure><h4>光源平面 · 相对透镜的位置</h4><svg id="single-geometry" viewBox="0 0 460 400" role="img" aria-label="源盘、Einstein 圆与直线轨迹"></svg><figcaption>红色圆盘为均匀光源；虚线圆为 θ<sub>E</sub>。所有位置均以单透镜 θ<sub>E</sub> 归一化。</figcaption></figure>
+    <figure><h4>归一化通量 · 同一个时间</h4><svg id="single-curve" viewBox="0 0 460 400" role="img" aria-label="有限源光变、点源近似和模拟测光误差棒"></svg><figcaption>蓝：当前模型；灰虚线：点源近似。圆点及误差棒为 <strong>77 个模拟点</strong>，不是 OGLE 观测。横轴 Δt 相对教学 t₀=0，以天计。</figcaption></figure>
+  </div>
+  <div class="controls">
+    <label for="single-time">时间 τ=(t−t₀)/t<sub>E</sub><output id="single-time-value" for="single-time"></output><input id="single-time" type="range" min="-6" max="6" step="0.02" value="0"></label>
+    <label for="single-u0">最近距离 u₀ · θ<sub>E</sub><output id="single-u0-value" for="single-u0"></output><input id="single-u0" type="range" min="0.02" max="2" step="0.01" value="0.59"></label>
+    <label for="single-te">Einstein 时间 t<sub>E</sub> · 天<output id="single-te-value" for="single-te"></output><input id="single-te" type="range" min="0.01" max="0.1" step="0.0001" value="0.0288"></label>
+    <label for="single-rho">源半径 ρ · θ<sub>E</sub><select id="single-rho"><option value="0">0 · 点源</option><option value="0.05">0.05</option><option value="0.2">0.2</option><option value="0.5">0.5</option><option value="1.0">1.0</option><option value="3.39" selected>3.39 · 教学初值</option></select></label>
+    <label for="single-fs">源通量比例 f<sub>s</sub><output id="single-fs-value" for="single-fs"></output><input id="single-fs" type="range" min="0" max="1" step="0.01" value="1"></label>
+    <label class="check" for="single-points"><input id="single-points" type="checkbox" checked>显示固定的模拟测光点</label>
+  </div>
+  <div class="figure-status"><button type="button" id="single-reset" onclick="AstroXray.reset('single')">恢复单透镜教学初值</button><output id="single-status" aria-live="polite"></output></div>
+  <p class="numerical-note">均匀圆盘源（Γ=0）用于隔离源尺寸对光变的平滑作用；临边昏暗还会改变源盘内的亮度权重。</p>
+  <p id="single-error" class="error" role="alert" hidden></p>
+</section>

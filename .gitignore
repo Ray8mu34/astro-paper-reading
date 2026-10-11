@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.test-work/
+validation/
+.venv/
+.env
+.env.*
+examples/**/report.html
+examples/**/report.md
+examples/**/analysis-notes.md
+paper.pdf
+paper-extracted.txt
+source-pages/

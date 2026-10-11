@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astro Paper Reading"
+  short_description: "面向研究生的天文论文精读：研究问题、论证地图与关键机制"
+  default_prompt: "使用 $astro-paper-reading 深入解读这篇论文，先建立研究问题与原文章节地图，再讲透关键机制，并按理解需要选择可视化。"

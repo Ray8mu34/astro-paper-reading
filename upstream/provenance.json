@@ -1,0 +1,19 @@
+{
+  "fetched_date": "2026-10-11",
+  "repository": "https://github.com/Wang-auspicious/paper-xray",
+  "files": [
+    {
+      "sha256": "d273272a63125d6e34cb925e0723bca9b0b807c1b9c4c08b07711fa979b22022",
+      "path": "figure-kit.html"
+    },
+    {
+      "sha256": "4c3add19c4454beacd9232bf06728f5a1f8a2f3bdcde40f924266aa0d176fa6e",
+      "path": "LICENSE"
+    },
+    {
+      "sha256": "93c80afab8d2bfc3ee213f8202303a3ee65fb3cdea390297269d83381dacc9ee",
+      "path": "SKILL.upstream.md"
+    }
+  ],
+  "revision": "80fe6a8515d24864b71b3847bd83f963e3485a6e"
+}

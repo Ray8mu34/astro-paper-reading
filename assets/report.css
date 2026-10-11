@@ -1,0 +1,68 @@
+:root { --paper:#ffffff; --ink:#1c2833; --muted:#516270; --line:#c9d4dd; --blue:#245ea0; --red:#a33d47; --panel:#f3f6f9; }
+* {box-sizing:border-box; scrollbar-width:thin; scrollbar-color:var(--muted) var(--panel)}
+body {margin:0; background:var(--paper); color:var(--ink); font:17px/1.85 Georgia,"Noto Serif SC","Source Han Serif SC",SimSun,serif}
+.masthead,footer {max-width:1100px; margin:auto; padding:24px; font:12px/1.5 Consolas,monospace; color:var(--muted); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:20px}
+main {max-width:1100px; margin:auto; padding:36px 24px 70px}
+h1 {font:500 clamp(24px,2.7vw,34px)/1.45 Georgia,SimSun,serif; max-width:none; margin:0 auto 24px}
+h2 {font:600 25px/1.5 Georgia,SimSun,serif; margin:50px 0 18px; border-top:1px solid var(--line); padding-top:20px}
+p,li {max-width:78ch; overflow-wrap:anywhere}
+a {color:var(--blue); text-underline-offset:3px}
+code,pre {font-family:Consolas,monospace} pre {overflow:auto; padding:14px; background:var(--panel)}
+table {display:block; max-width:100%; overflow:auto; border-collapse:collapse; font-size:14px}
+th,td {padding:9px 12px; border-bottom:1px solid var(--line); text-align:left; min-width:70px}
+footer {border-top:1px solid var(--line); border-bottom:0}
+:focus-visible {outline:3px solid var(--blue); outline-offset:4px}
+.experiment {margin:28px 0 40px; border-top:2px solid var(--ink); border-bottom:1px solid var(--line); padding:20px 0 14px}
+.figure-heading {display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:6px 20px}
+h3 {margin:0; font-size:22px; font-weight:600} .basis,.instruction,.numerical-note,figcaption {color:var(--muted); font:14px/1.7 "Segoe UI","Microsoft YaHei",sans-serif}
+.instruction {max-width:90ch; margin:14px 0 22px} .numerical-note {max-width:none}
+.plots {display:grid; grid-template-columns:repeat(2,minmax(0,1fr));gap:20px} figure {margin:0; min-width:0}
+h4 {font:600 14px/1.6 "Segoe UI","Microsoft YaHei",sans-serif;margin:0 0 8px;color:var(--ink)}
+svg {display:block; width:100%; height:auto; background:var(--paper)} figcaption {margin:6px 0 12px; font-size:12px; min-height:60px}
+.binary-plots {grid-template-columns:repeat(3,minmax(0,1fr))}
+.plot-frame {fill:var(--paper);stroke:var(--line);stroke-width:1}
+.grid-line {stroke:var(--line);stroke-width:.6;opacity:.55}.zero-line{stroke:var(--muted);stroke-width:.8;opacity:.6}
+.tick,.axis-label,.plot-note {fill:var(--muted);font:16px "Segoe UI","Microsoft YaHei",sans-serif}
+.axis-label {fill:var(--ink);font-size:16px}.plot-note{font-size:14px}
+svg path {fill:none;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.model,.critical {stroke:var(--blue);stroke-width:1.8}.caustic {stroke:var(--red);stroke-width:1.8}
+.analytic {stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4;opacity:.75}
+.trajectory {stroke:var(--muted);stroke-width:1;stroke-dasharray:7 4}
+.einstein {fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 3}
+.source-disk {fill:var(--red);fill-opacity:.09;stroke:var(--red);stroke-width:1.5}
+.separation,.time-line{stroke:var(--red);stroke-width:1;stroke-dasharray:3 3}
+.lens{fill:var(--ink)}.lens-mark{stroke:var(--ink);stroke-width:1.2}
+.current{fill:var(--red);stroke:var(--paper);stroke-width:1.5}.schematic-point{fill:var(--paper);stroke:var(--muted);stroke-width:1}
+.observation{fill:var(--paper);stroke:var(--muted);stroke-width:1}.error-bar{stroke:var(--muted);stroke-width:.8;opacity:.65}
+.controls {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 24px;padding:18px 0;border-top:1px solid var(--line)}
+label {position:relative; display:block; font:14px/1.6 "Segoe UI","Microsoft YaHei",sans-serif;min-width:0}
+label output {display:block; font-family:Consolas,monospace;min-width:50px;min-height:22px;margin-top:2px;text-align:left}
+input[type=range]{display:block;width:100%;margin:12px 0 0;accent-color:var(--blue);cursor:pointer;height:24px}
+select,button {font:14px/1.5 "Segoe UI","Microsoft YaHei",sans-serif;border:1px solid var(--line);border-radius:2px;background:var(--paper);color:var(--ink);cursor:pointer;min-height:40px;padding:7px 10px}
+select{display:block;width:100%;margin-top:8px} button:hover,select:hover {border-color:var(--blue);background:var(--panel)}
+button:active {background:var(--line)} button:disabled{opacity:.55;cursor:default}
+.check {display:flex;align-items:center;gap:10px;min-height:40px;padding-top:20px}.check input {accent-color:var(--blue);width:18px;height:18px;cursor:pointer}
+.figure-status {display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;min-height:52px}
+.figure-status output{font:13px/1.8 Consolas,"Microsoft YaHei",monospace;color:var(--muted)}
+.error {border-left:3px solid var(--red);padding:12px;background:var(--panel);font:14px/1.6 "Microsoft YaHei",sans-serif}
+.equation {max-width:100%;overflow:auto;padding:12px 4px;font-size:1.1em} math{max-width:100%}
+article > p,article > ul,article > ol,article > h1,article > h2,article > h3,article > .equation {max-width:780px;margin-left:auto;margin-right:auto}
+article > table {width:100%;font-size:15px;line-height:1.7;margin:24px auto;max-width:1000px}
+article > table th:first-child,article > table td:first-child {min-width:150px}
+.source-figure {max-width:860px;margin:28px auto 36px}
+.source-figure img {display:block;width:100%;height:auto;background:var(--paper)}
+.source-figure figcaption,.visual-caption {max-width:780px;margin:12px auto;font:14px/1.75 "Segoe UI","Microsoft YaHei",sans-serif;color:var(--muted);min-height:0}
+.reading-nav,.supplement {margin:28px auto;max-width:1000px;border-block:1px solid var(--line);padding:16px 0}
+summary {cursor:pointer;color:var(--blue);font:15px/1.7 "Segoe UI","Microsoft YaHei",sans-serif;min-height:32px}
+summary:hover {color:var(--ink)}summary:active {color:var(--muted)}
+.reading-nav ul {display:flex;flex-wrap:wrap;gap:12px 28px;list-style:none;padding:0;margin:18px 0 6px}
+.supplement-content {padding-top:12px}.supplement-content p,.supplement-content ul,.supplement-content h2 {max-width:780px;margin-left:auto;margin-right:auto}
+.reader-interactive {margin:30px 0}.reader-interactive .experiment {margin-bottom:12px}
+.supplement h2 {font-size:23px}.supplement .source-figure {max-width:780px}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:var(--panel)}::-webkit-scrollbar-thumb{background:var(--muted)}::-webkit-scrollbar-thumb:hover{background:var(--ink)}
+@media(max-width:900px){.binary-plots{grid-template-columns:repeat(2,minmax(0,1fr))}.binary-plots figure:first-child{grid-column:1/-1;max-width:480px;margin:auto}}
+@media(max-width:700px){body{font-size:16px}main{padding:24px 18px 50px}.masthead{padding:18px}.masthead span:last-child{display:none}.plots,.binary-plots{grid-template-columns:1fr}.binary-plots figure:first-child{grid-column:auto;max-width:none;width:100%}.controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}figcaption{min-height:0}.figure-heading{display:block}.basis{display:block;margin-top:6px}h2{font-size:22px}}
+@media(max-width:380px){.controls{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto;animation:none;transition:none}}
+@media(forced-colors:active){*{scrollbar-color:auto}.source-disk{fill:Canvas;stroke:CanvasText}.model,.critical,.caustic{stroke:CanvasText}.current,.lens{fill:CanvasText}}
+@media print{.controls,.figure-status{display:none}.experiment{break-inside:avoid}body{font-size:11pt}main{padding:0}.masthead{position:static}}

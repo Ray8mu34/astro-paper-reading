@@ -1,0 +1,18 @@
+<section class="experiment" id="binary-lens" aria-labelledby="binary-heading">
+  <div class="figure-heading"><h3 id="binary-heading">双透镜：临界曲线映射到哪里？</h3><span class="basis">独立教学模块 · 数值焦散图谱</span></div>
+  <p class="instruction">蓝色临界曲线在像平面，红色焦散在源平面。右侧比较倒数间距 1/s 的源平面几何，两幅焦散图共用坐标范围。虚线仅是可调的源轨迹示意。</p>
+  <div class="plots binary-plots">
+    <figure><h4>像平面 · 两个透镜与 critical curves</h4><svg id="binary-critical" viewBox="0 0 460 400" role="img" aria-label="双透镜临界曲线和两个透镜的位置"></svg><figcaption>十字与实心点标出两个透镜；位置为 −sq/(1+q)、s/(1+q)。质心在原点，单位为总质量 θ<sub>E</sub>。</figcaption></figure>
+    <figure><h4 id="binary-primary-title">源平面 · 当前 s 的 caustics</h4><svg id="binary-caustic" viewBox="0 0 460 400" role="img" aria-label="当前间距的焦散与示意轨迹"></svg><figcaption>焦散是 det J=0 的临界曲线经透镜方程的映射；移动示意轨迹，观察它经过哪些高放大区域。</figcaption></figure>
+    <figure><h4 id="binary-compare-title">源平面 · 倒数间距 1/s 对照</h4><svg id="binary-compare" viewBox="0 0 460 400" role="img" aria-label="倒数间距焦散对照"></svg><figcaption>倒数间距对照显示中央焦散的相似性；光变是否简并还取决于源轨迹、源大小与观测覆盖。</figcaption></figure>
+  </div>
+  <div class="controls">
+    <label for="binary-s">间距 s · 总质量 θ<sub>E</sub><select id="binary-s"><option value="0.6">0.6 · close</option><option value="0.8" selected>0.8 · close</option><option value="1">1.0 · resonant</option><option value="1.25">1.25 · wide</option><option value="1.6666666666666667">1.6667 · wide</option></select></label>
+    <label for="binary-q">质量比 q=m₂/m₁<select id="binary-q"><option value="0.001">0.001</option><option value="0.01">0.01</option><option value="0.1" selected>0.1</option><option value="1">1.0</option></select></label>
+    <label for="binary-view">源平面视域<select id="binary-view"><option value="full">全部焦散 · 共用范围</option><option value="central">中心视窗 · ±0.3 θ<sub>E</sub></option></select></label>
+    <label for="binary-angle">示意轨迹角 α · 度<output id="binary-angle-value" for="binary-angle"></output><input id="binary-angle" type="range" min="-90" max="90" step="1" value="20"></label>
+    <label for="binary-impact">示意轨迹偏距 b · θ<sub>E</sub><output id="binary-impact-value" for="binary-impact"></output><input id="binary-impact" type="range" min="-0.3" max="0.3" step="0.01" value="0.06"></label>
+  </div>
+  <div class="figure-status"><button type="button" id="binary-reset" onclick="AstroXray.reset('binary')">恢复双透镜教学初值</button><output id="binary-status" aria-live="polite"></output></div>
+  <p id="binary-error" class="error" role="alert" hidden></p>
+</section>
