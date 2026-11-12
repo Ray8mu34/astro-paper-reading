@@ -40,6 +40,22 @@ def test_reader_and_notes_are_distinct_artifacts(edition, tmp_path):
     assert run('validate_skill.py', '--analysis', path, '--require-artifacts').returncode != 0
 
 
+def test_reader_roadmap_is_after_main_scientific_explanation(edition):
+    # This tests document order only; no browsers or numerical integrations.
+    md = render_markdown(edition)
+    method_title = next(s['title'] for s in edition['sections'] if s['id'] == 'method')
+    assert md.index('## ' + method_title) < md.index('## 原文结构导览')
+    assert md.index('## 原文结构导览') < md.index('## 原文\n')
+
+
+def test_markdown_only_delivery_does_not_require_html(edition, tmp_path):
+    path = tmp_path / 'analysis.json'
+    path.write_text(json.dumps(edition), encoding='utf-8')
+    assert run('build_report.py', '--analysis', path, '--md-only').returncode == 0
+    assert not (tmp_path / 'report.html').exists()
+    assert run('validate_skill.py', '--analysis', path, '--require-artifacts', '--md-only').returncode == 0
+
+
 def test_reader_planning_references_and_audiences(edition):
     invalid = copy.deepcopy(edition)
     del invalid['reader']

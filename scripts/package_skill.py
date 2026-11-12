@@ -19,7 +19,7 @@ def package(out):
     for path in sorted(ROOT.rglob("*")):
         rel=path.relative_to(ROOT)
         if not path.is_file() or any(p in excluded or p.endswith(".egg-info") for p in rel.parts):continue
-        if path.name in {"paper.pdf","paper-extracted.txt","release-manifest.json","package.json","package-lock.json"} or path.suffix in {".pyc",".pyo"}:continue
+        if path.name.lower() in {"paper.pdf","paper-extracted.txt","release-manifest.json","package.json","package-lock.json"} or path.suffix in {".pyc",".pyo"}:continue
         members.append((path,rel))
     out.parent.mkdir(parents=True,exist_ok=True)
     manifest=[]
@@ -32,7 +32,11 @@ def package(out):
             info.external_attr=0o100644<<16
             z.writestr(info,content)
             manifest.append(dict(path=name,bytes=len(content),sha256=hashlib.sha256(content).hexdigest()))
-        z.writestr("astro-paper-reading/RELEASE-MANIFEST.json",json.dumps(manifest,indent=2))
+        # Never carry the old manifest into the archive; write exactly one current manifest.
+        info=zipfile.ZipInfo("astro-paper-reading/RELEASE-MANIFEST.json",date_time=(2026,10,21,0,0,0))
+        info.compress_type=zipfile.ZIP_DEFLATED
+        info.external_attr=0o100644<<16
+        z.writestr(info,json.dumps(manifest,indent=2))
     with zipfile.ZipFile(out) as z:
         if z.testzip():raise ValueError("ZIP CRC failed")
     record=dict(zip=str(out.resolve()),sha256=hashlib.sha256(out.read_bytes()).hexdigest(),bytes=out.stat().st_size,files=len(manifest),excluded="Git/cache/build folders and downloaded paper PDF/text/source page images; downloaded literature and local execution records excluded")
@@ -43,5 +47,5 @@ def package(out):
 
 if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--out",type=Path,default=ROOT/"dist/astro-paper-reading-v1.1.skill.zip")
+    p.add_argument("--out",type=Path,default=ROOT/"dist/astro-paper-reading-v1.2.0-fast-skill.zip")
     package(p.parse_args().out)

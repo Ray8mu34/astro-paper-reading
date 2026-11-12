@@ -1,21 +1,23 @@
-# V1.1 内容与输出分层
+# Astro Paper Reading v1.2.0-fast：原文章序驱动的轻量精读架构
 
-读者先建立研究问题、贡献、结果与原文结构的全局认识，再沿概念依赖进入关键机制。科学文章与工作记录从共享状态分别构建，复现和执行信息保存在独立记录中。
-
+```text
+实际论文（已固定版本；正文主要章节、图/式、必要附录）
+  ↓
+reader.roadmap（按原文主要章序：章号、职责、来源和页码）
+reader.argument_route（读者开篇的一段原文论证路线）
+sections[].source_sections（报告段落 → 作者原文章节）
+  ↓
+report.md / report.html（按原文章序精讲，含必要物理/统计与原图）
+  ↓
+一次交付检查（真实章序、关键科学事实、文件一致性）
 ```
-原文与核查 → analysis.json
-                ├ reader.overview / roadmap / focus + sections(reader)
-                │     → report.md / report.html（科学文章）
-                ├ sections(appendix)
-                │     → 文章末尾进一步科学推导
-                └ coverage / claims / parameters / reproduction / internal
-                      → analysis-notes.md + validation（工作记录）
-```
 
-选择图形前保存理解难点、替代方案、include/omit理由及交互增益。原图和局部组件由manifest与共享状态交给同一个构建器；验收比较当前资产确定性生成的完整HTML。
+`schema_version=1.3`、`reader.organization="paper-order"` 为新任务默认。原文章节可以相邻合并或连续细分，主要章节完整覆盖并保持顺序；独立评价在主要作者论证之后。如用户明确要求专题重组，或局部先修解释仍不足以解决严重理解障碍，使用 `restructured` 和具体的 `departure_reason`，保留原文地图。
 
-兼容schema1.0的科学状态、数值基元、内置组件和CLI；新草稿为schema1.1，发布需要原文地图与概览。旧正文的防御性段落不会被自动删除，需作者按句子作用重新编辑。没有添加关键词过滤器，也没有假设每个领域都必须写数学或配交互。
+文首是科学 `overview` 和简短 `argument_route`，不是完整章节目录或模型批评；文末 `roadmap` 为带真实 §/PDF 页码的检索表。`throughline`/`connections` 只是可选的内部理解笔记，非每篇必填。`claims`/`parameters`/`coverage`/`reproduction` 进入内部 `analysis-notes.md`，不会占据读者正文。`sections(audience=appendix)` 为补充科学材料，不用于藏核心方法。
 
-DESIGN.md的改动为有意的系统演进：保留白底、语义色、离线系统字体、原生控件和Figure Kit；标题缩到24–34px，正文宽780px，科学概览优先，目录转为原文地图后的小型导航。关键推导默认展开；补充层为原生details。canonical runtime仍是assets/report.css；DESIGN.md记录意图并镜像颜色，现有漂移测试继续使用。
+**与 CV v1.2.1 的一致性**：原文忠实、在对应章内深化技术、独立评价集中、一次轻量核对；**天文特有差异**：观测量到物理推断的层级、单位/参考系/时间系统、先验与简并、理论假设和模拟数值域，按论文类型保留。
 
-数值模块未改。质量检查新增受众泄漏、原文定位引用、零图、被舍弃资产、附录发现性、资产变更后验收拒绝与失败保留输出的测试；结构完整不等于叙事好读，仍做实际文章/截图评估。
+报告引擎保留离线 MathML、原图/本地示意选择、共享数值组件；不修改 `astro_xray/lensing.py` 或资产的物理计算。兼容旧 schema 1.0/1.1：老报告可以构建，不自动回写新的章序字段。验证器只检查已登记的 roadmap 覆盖，无法自行检查论文真实目录是否被漏抄；人的科学阅读仍有必要。
+
+普通论文读写不启用读者自评、MCMC 重跑、浏览器/响应式检查或软件回归。开发新版本时可按变更运行专项 pytest 和 ZIP 文件哈希校验；测试输出不能代替论文内容的解释质量。

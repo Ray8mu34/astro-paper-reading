@@ -14,10 +14,11 @@ def main():
     parser.add_argument("--mode", choices=MODES, default="deep-md")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    data = dict(schema_version="1.1", status="draft", mode=args.mode,
+    data = dict(schema_version="1.3", status="draft", mode=args.mode,
                 paper=dict(title="", input=args.input, version="unknown", kind="unknown"),
                 coverage=dict(level="none", read=[], missing=["Paper has not been read"], teaching_only=False),
                 sources=[], question="", concepts=[], claims=[], parameters=[], assumptions=[], sections=[],
+                reader=dict(overview="", argument_route="", organization="paper-order", departure_reason="", roadmap=[], focus=[]),
                 unknowns=["Evidence not collected"], reproduction=dict(status="not-run", notes=[]),
                 artifacts=dict(markdown="report.md", html="report.html", notes="analysis-notes.md"))
     validate_analysis(data)

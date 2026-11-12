@@ -13,7 +13,7 @@ from astro_xray.report import ROOT, build_html, read_json, render_markdown, rend
 
 def validate_skill(root):
     errors = []
-    required = ["SKILL.md", "schemas/analysis.schema.json", "references/visualization.md", "references/component-contract.md", "references/quality-gates.md", "scripts/new_analysis.py", "scripts/build_report.py", "scripts/validate_skill.py", "docs/DESIGN-AUDIT.md", "assets/report.css", "assets/report.js", "assets/single-lens.html", "assets/binary-lens.html"]
+    required = ["SKILL.md", "schemas/analysis.schema.json", "references/narrative-workflow.md", "references/visualization.md", "references/component-contract.md", "references/quality-gates.md", "scripts/new_analysis.py", "scripts/build_report.py", "scripts/validate_skill.py", "docs/DESIGN-AUDIT.md", "assets/report.css", "assets/report.js", "assets/single-lens.html", "assets/binary-lens.html"]
     for name in required:
         if not (root / name).is_file():
             errors.append(f"Missing required file: {name}")
@@ -37,6 +37,7 @@ def main():
     p.add_argument("--root", type=Path, default=ROOT)
     p.add_argument("--analysis", type=Path)
     p.add_argument("--require-artifacts", action="store_true")
+    p.add_argument("--md-only", action="store_true", help="Validate Markdown and notes without requiring an HTML artifact")
     p.add_argument("--demo-data", type=Path)
     args = p.parse_args()
     errors = validate_skill(args.root)
@@ -45,7 +46,9 @@ def main():
     if args.analysis:
         data = validate_analysis(read_json(args.analysis), publish=args.require_artifacts, root=args.root)
         if args.require_artifacts:
-            artifacts = dict(notes='analysis-notes.md', **data['artifacts']) if 'notes' not in data['artifacts'] else data['artifacts']
+            artifacts = dict(notes='analysis-notes.md', **data['artifacts']) if 'notes' not in data['artifacts'] else dict(data['artifacts'])
+            if args.md_only:
+                artifacts.pop('html', None)
             for kind, rel in artifacts.items():
                 path = safe_artifact(args.analysis.parent, rel)
                 if not path.is_file() or not path.stat().st_size:

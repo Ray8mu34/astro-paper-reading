@@ -15,3 +15,4 @@ examples/**/analysis-notes.md
 paper.pdf
 paper-extracted.txt
 source-pages/
+/RELEASE-MANIFEST.json

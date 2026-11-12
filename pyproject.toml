@@ -3,8 +3,8 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 [project]
 name = "astro-paper-reading"
-version = "1.1.0"
-description = "Reader-first astronomy explanations with separate scientific records and offline figures"
+version = "1.2.0"
+description = "Source-faithful astronomy paper explanations with lightweight checks and offline figures"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "scipy>=1.10", "mistune>=3,<4", "PyYAML>=6", "jsonschema>=4", "latex2mathml>=3.77,<4"]
 [project.optional-dependencies]

@@ -77,6 +77,13 @@ def validate_analysis(data, *, publish=False, root=ROOT):
             section = sections.get(focus['section_id'])
             if section is None or section.get('audience', 'reader') != 'reader':
                 raise ValueError('Reading route must point to a main reader section')
+        connections = reader.get('connections', [])
+        connection_ids = [c['section_id'] for c in connections]
+        if len(connection_ids) != len(set(connection_ids)):
+            raise ValueError('Duplicate section in narrative connections')
+        for sid in connection_ids:
+            if sid not in sections or sections[sid].get('audience', 'reader') != 'reader':
+                raise ValueError('Narrative connections must point to main reader sections')
     visual_ids = set()
     for visual in data.get('visuals', []):
         if visual['id'] in visual_ids or visual['section_id'] not in sections:
@@ -104,12 +111,69 @@ def validate_analysis(data, *, publish=False, root=ROOT):
     if publish:
         if data["status"] != "ready" or not data["question"].strip() or not data["paper"]["title"].strip():
             raise ValueError("Analysis is still a draft; Agent must read and populate it")
-        if not data["claims"] or not data["sections"] or not data["unknowns"]:
+        if not data["claims"] or not data["sections"] or (data["schema_version"] != "1.3" and not data["unknowns"]):
             raise ValueError("Publish requires claims, narrative and explicit unknowns")
         if data["coverage"]["level"] != "full" and not data["coverage"]["teaching_only"] and data["mode"] != "quick":
             raise ValueError("Deep/review reports need full coverage or an explicit teaching-only label")
-        if data['schema_version'] == '1.1' and data['mode'] != 'quick' and (not reader or not reader['overview'].strip() or not reader['roadmap']):
+        if data['schema_version'] in ('1.1', '1.2', '1.3') and data['mode'] != 'quick' and (not reader or not reader['overview'].strip() or not reader['roadmap']):
             raise ValueError('Reader edition needs an overview and original-paper roadmap')
+        if data['schema_version'] in ('1.2', '1.3'):
+            if not reader or not reader['overview'].strip():
+                raise ValueError('Reader edition needs an overview')
+        # Legacy 1.2 keeps its original full internal narrative-plan contract.
+        # With 1.3 the actual original-paper roadmap and source-section mapping
+        # already establish the reading order, so a duplicate per-section plan
+        # is OPTIONAL. This avoids a repeated model-writing pass on each paper.
+        if data['schema_version'] == '1.2' and data['mode'] != 'quick':
+            if not reader.get('throughline', '').strip():
+                raise ValueError('Write a continuous throughline before publishing a deep/review report')
+            main_ids = [s['id'] for s in data['sections'] if s.get('audience', 'reader') == 'reader']
+            if [c['section_id'] for c in reader.get('connections', [])] != main_ids:
+                raise ValueError('Narrative connections must cover each main reader section in reading order')
+        if data['schema_version'] == '1.3' and data['mode'] != 'quick':
+            if not reader.get('argument_route', '').strip():
+                raise ValueError('Schema 1.3 needs a concise source-faithful argument route')
+            organization = reader.get('organization')
+            if organization not in ('paper-order', 'restructured'):
+                raise ValueError('Schema 1.3 needs reader.organization (paper-order by default)')
+            if organization == 'restructured' and not reader.get('departure_reason', '').strip():
+                raise ValueError('Restructured report must explain a concrete departure from paper order')
+            # All roadmap labels refer to the actual original paper; automatic
+            # validation cannot detect a chapter the writer omitted from roadmap.
+            chapter_order = [r['section'] for r in reader['roadmap']]
+            chapter_index = {label: index for index, label in enumerate(chapter_order)}
+            main = [s for s in data['sections'] if s.get('audience', 'reader') == 'reader']
+            trace = []
+            end_commentary = False
+            for sec in main:
+                mapping = sec.get('source_sections')
+                if mapping is None:
+                    raise ValueError('Schema 1.3 main reader sections need source_sections')
+                if not mapping and sec['role'] not in ('review', 'limitations'):
+                    raise ValueError('Unmapped main reader section must be a clearly separate review or limitations')
+                if not mapping:
+                    end_commentary = True
+                elif end_commentary and organization == 'paper-order':
+                    raise ValueError('Independent commentary must follow the complete original-paper account')
+                for label in mapping:
+                    if label not in chapter_index:
+                        raise ValueError(f'Unknown original-paper chapter in section map: {label}')
+                    trace.append(chapter_index[label])
+            if set(trace) != set(range(len(chapter_order))):
+                raise ValueError('Original-paper roadmap chapters must all be covered by main reader sections')
+            if organization == 'paper-order' and trace != sorted(trace):
+                raise ValueError('Main reader sections must follow original-paper chapter order')
+        # Schema 1.3 should reflect the actual astronomical paper, not force
+        # an experimental-style background/method/evidence/limitations template.
+        # Proofs can constitute evidence in a theory paper, and quick summaries
+        # must not invent a limitations chapter only to satisfy metadata.
+        if data['schema_version'] == '1.3':
+            main_reader_sections = [sec for sec in data['sections'] if sec.get('audience', 'reader') == 'reader']
+            if not main_reader_sections:
+                raise ValueError('Schema 1.3 requires at least one reader section')
+            if data['mode'] == 'critical-review' and not any(sec['role'] == 'review' for sec in main_reader_sections):
+                raise ValueError('Critical-review mode requires an independent review section')
+            return data
         roles = {s["role"] for s in data["sections"] if s.get('audience', 'reader') != 'internal'}
         needed = {"limitations"}
         if data["mode"] in ("deep-md", "interactive-html"):
@@ -157,6 +221,9 @@ def render_markdown(data):
     reader = data.get('reader')
     # Legacy states remain buildable. Existing defensive prose still needs author editing.
     out.append(reader['overview'] if reader else data['question'])
+    if reader and data['schema_version'] == '1.3' and reader.get('argument_route', '').strip() and data['mode'] != 'quick':
+        out += ['## 论文论证路线', reader['argument_route']]
+    roadmap = None
     if reader and reader['roadmap']:
         sources = {s['id']: s for s in data['sources']}
         rows = ['## 原文结构导览', '|原文章节|在论证中的作用|回到原文看什么|', '|---|---|---|']
@@ -165,7 +232,7 @@ def render_markdown(data):
             label = f"{row['section']} · {row['title']}"
             link = f"[{label}]({url.split('#')[0]}#page={row['page']})" if re.match(r'^https?://[^\s()]+$', url) else label
             rows.append('|'+ '|'.join(cell(x) for x in [link, row['argument'], row['focus']])+'|')
-        out.append('\n'.join(rows))
+        roadmap = '\n'.join(rows)
     appendix_started = False
     for section in reader_sections(data):
         if section.get('audience') == 'appendix' and not appendix_started:
@@ -190,6 +257,8 @@ def render_markdown(data):
             out.append(f"<!-- astro-module:{section['module']} -->")
     if appendix_started:
         out.append('<!-- astro-appendix-end -->')
+    if roadmap:
+        out.append(roadmap)  # Original-paper guide remains after the reader article in every version
     # A compact bibliography links to the paper; access logs belong to notes.
     accessed = [s for s in data['sources'] if s['accessed'] and re.match(r'^https?://[^\s()]+$', s['url'])]
     if accessed:
@@ -206,6 +275,20 @@ def render_notes(data):
             continue
         out.extend([f"## {section['title']}", section["markdown"]])
     out += ['## 叙事选择', *[f"- {f['question']}：{f['why']}" for f in data.get('reader', {}).get('focus', [])]]
+    reader = data.get('reader', {})
+    if reader.get('organization'):
+        out += ['## 原文章序与映射', f"讲解组织：{reader['organization']}"]
+        if reader.get('departure_reason'):
+            out.append(f"改变原文章序的具体理由：{reader['departure_reason']}")
+        for section in data['sections']:
+            if section.get('audience', 'reader') == 'reader':
+                out.append(f"- {section['id']}: {', '.join(section.get('source_sections', [])) or '独立评价'}")
+    if reader.get('throughline'):
+        out += ['## 主线草稿', reader['throughline']]
+    if reader.get('connections'):
+        out += ['## 正文理解连接', *[
+            f"- {c['section_id']}\n  进入前：{c['needs']}\n  读完后：{c['adds']}"
+            for c in reader['connections']]]
     out += ['## 图形选择记录', *[f"- {v['id']} / {v['placement']} / {v['basis']}：{v['question']}\n  理由：{v['why']}；替代：{v['alternative']}；交互增益：{v.get('interaction_gain', '不适用')}" for v in data.get('visuals', [])]]
     if data["parameters"]:
         rows = ["|变量|值|单位|类别|不确定性|参考系|定位|", "|---|---|---|---|---|---|---|"]

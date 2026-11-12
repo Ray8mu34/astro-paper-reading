@@ -37,8 +37,10 @@ components:
 Register: scientific reading tool for astronomy graduate readers, zh-CN.
 North Star: a reader who has not opened the PDF understands the research
 problem, contribution, results and argument before entering local mechanisms.
-Its signature is an original-section argument map followed by a few sustained
-scientific questions. The paper determines those questions and their order.
+Its signature is a concise overview plus an original-paper argument route, followed
+by a faithful chapter-by-chapter account with necessary physical and mathematical
+deepening at the relevant chapter. An original-section map remains at the end for
+source cross-reference. Authorial argument order determines the main reading path.
 Original figures carry evidence; interaction earns its place through added insight.
 The user brief and references/scientific-integrity.md own scientific boundaries.
 Paper X-Ray Figure Kit informs captions, semantic color and stroke discipline.
@@ -61,8 +63,10 @@ Consolas numbers. Offline fonts have locale-capable fallbacks; no font download.
 
 1100px outer frame, 780px prose measure, 24px gutters; paired figures become one column below
 700px. A restrained 24–34px title gives the research overview room on the first screen.
-The original-section map is visible after the overview; local navigation is a
-native disclosure below it. Scientific mechanisms remain open in the article.
+A concise original-paper argument route follows the overview; the main prose
+follows the author's original chapter order. Local navigation is a
+native disclosure before the first reader section. The original-section map is
+at the end as a cross-reference tool. Scientific mechanisms remain open in the article.
 Only supplementary derivations use a labeled disclosure. Display equations and wide tables scroll inside their own
 regions. Long prose uses natural page scrolling. SVG geometry has equal axes.
 Controls form a compact grid below each figure; values stay in reserved fields.

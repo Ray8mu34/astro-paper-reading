@@ -1,149 +1,89 @@
 # Astro Paper Reading
 
-面向有专业基础的研究生，把天文学、天体物理与引力透镜论文读成一篇连贯、深入的科学解释文章。
+适合天文、天体物理研究生的论文精读 Skill，支持观测、理论、模拟、方法、仪器和混合型研究。**v1.2.0-fast 与 CV Paper Reading v1.2.1 使用同一套组织原则：默认按原文章节和论证顺序讲清整篇论文，并在对应位置深入物理与数学，最后集中做独立评价。** 现有微透镜、统计推断、离线 HTML 和数值教学组件保留。
 
-**先理解研究者在解决什么问题、为什么这样思考，以及如何得到结论，再深入关键机制。**
+## v1.2.0-fast 的关键变化
 
-这是一个供 AI Agent 使用的 Skill，包含阅读与写作规范、结构化科学状态、离线 HTML 构建器和经过测试的微透镜教学组件。当前版本为 **1.1.0**，由 Astro Paper X-Ray 演进而来。
+- **遵循原文论证**：先核对作者真正的主要章节，不再默认“暂时放下目录”、由模型重组最短故事。
+- **解释研究选择的由来**：相关研究的缺口、观测与样本选择、模型假设、技术瓶颈、方法与图表之间的关系纳入正文。
+- **在原文对应位置深入**：解释关键方程、单位、参考系、数值方法、拟合及先验，以及哪些数据支撑什么物理结论。
+- **先重建后评价**：重要结论的必要限制在原位写一次，额外的科学审查放在作者论证完整介绍之后；避免重复防御性写作。
+- **真正轻量**：普通任务不额外进行逐章自评、读者模拟、全量数值回归、MCMC、浏览器/响应式测试或发布验收。
 
-## 阅读体验
+新任务使用 `schema_version=1.3`。`reader.roadmap` 保存**真实原文主要章节**；`argument_route` 是概览后的一段原文论证路线；`sections[].source_sections` 建立正文与原文章节的对应；默认 `organization=paper-order`。有具体理由需要重组才选 `restructured` 并填写 `departure_reason`。`throughline/connections` 可选，无需额外重复规划。旧 schema 1.0/1.1 的报告保留构建兼容性。
 
-- **先建立全局。** 开篇交代研究问题、困难、思路、贡献、主要结果与科学适用范围。
-- **能回到原文。** 结构导览对应真实的 § 编号，解释各节在论证中的作用，并定位关键图表与公式。
-- **围绕关键问题深讲。** 选择决定结论的机制、难点和证据；需要时保留完整推导，简单内容简明解释。
-- **图形服务理解。** 优先解读论文原图；只有交互能回答具体的反事实问题时才制作交互，不设数量指标。
-- **正文保持连贯。** 关键推导自然展开，补充推导可放附录；文件版本、覆盖范围、执行日志和证据账本独立保存。
+## 四种模式
 
-天文与微透镜有专门的物理和统计参考规范；其他天体物理领域按论文的问题与方法组织内容。四种输出模式如下：
-
-| 模式 | 适合的任务 |
-| --- | --- |
-| `quick` | 筛选论文，迅速把握问题、思路和结果；可基于摘要并注明信息范围 |
-| `deep-md` | 深入解释论文，交付便于保存与编辑的 Markdown |
-| `interactive-html` | 深读文章与独立离线 HTML；按需要嵌入原图或交互，也可以没有交互 |
-| `critical-review` | 围绕中心论断分析证据、假设、简并与替代解释 |
+|模式|目的|
+|---|---|
+|`quick`|仅根据确实读取的材料快速掌握研究问题与结果|
+|`deep-md`|原文顺序的完整深度讲解，交付 Markdown|
+|`interactive-html`|同样的深度和章节逻辑，追加离线 HTML；原图优先、交互按需|
+|`critical-review`|先讲清作者原文论证，再集中分析重要替代解释与证据边界|
 
 ## 安装
 
-需要支持本地 Skill、文件访问和脚本执行的 Agent。以 Codex 为例，将本仓库放到其 skills 目录，使目录结构为 `~/.codex/skills/astro-paper-reading/SKILL.md`。
+从 [GitHub Releases](https://github.com/Ray8mu34/astro-paper-reading/releases/latest) 下载 Skill ZIP，把顶层 `astro-paper-reading/` 放入 Codex 的 Skill 目录（例如 `~/.codex/skills/astro-paper-reading/`），替换同名旧目录。完整目录中应保留 `SKILL.md`、`references/`、`schemas/`、`astro_xray/`、`scripts/` 和 `assets/`。
 
-Windows PowerShell：
+也可以在目标目录尚不存在时，从仓库安装当前版本：
 
 ```powershell
-git clone https://github.com/Ray8mu34/astro-paper-reading.git "$HOME/.codex/skills/astro-paper-reading"
-Set-Location "$HOME/.codex/skills/astro-paper-reading"
+git clone --branch v1.2.0 https://github.com/Ray8mu34/astro-paper-reading.git "$env:USERPROFILE/.codex/skills/astro-paper-reading"
 ```
 
-macOS / Linux：
+Python ≥ 3.10，脚本依赖 numpy、scipy、mistune、PyYAML、jsonschema、latex2mathml。可在已有 Conda 或项目虚拟环境中安装：
 
 ```sh
-git clone https://github.com/Ray8mu34/astro-paper-reading.git ~/.codex/skills/astro-paper-reading
-cd ~/.codex/skills/astro-paper-reading
-```
-
-使用自己的项目或虚拟环境安装构建依赖，要求 **Python ≥ 3.10**：
-
-```text
 python -m pip install -e .
 python scripts/validate_skill.py
 ```
 
-若使用 Conda，请通过目标环境运行，例如 `conda run -n dl_env python -m pip install -e .`。核心依赖包括 NumPy、SciPy、Mistune、PyYAML、jsonschema 与 latex2mathml。安装完整目录：构建器还需要相邻的 `assets/`、`schemas/` 与参考文档。
+## 直接用法
 
-安装后在新聊天中调用 `$astro-paper-reading`。已安装旧名 `astro-paper-xray` 的用户，可以保留旧目录作为备份，再将新版安装到新目录；调用时明确使用新名。
-
-## 使用
-
-把 arXiv 链接、DOI、论文 PDF 或正文交给 Agent，例如：
+把 arXiv 链接、DOI、PDF 或正文交给 Agent：
 
 ```text
-使用 $astro-paper-reading 深度解读 https://arxiv.org/abs/2311.13097。
-读者具备微透镜基础，但尚未看过原文。
-请先讲清研究问题、贡献、结果和原文章节的论证结构，
-再深入最关键的机制，按理解需要使用原图或交互，输出离线 HTML。
+使用 $astro-paper-reading 精读这篇论文。
+按照作者实际的章节与论证顺序讲解：研究问题、背景与动机、
+观测/模型/理论方法、关键物理与数学、原图和结果、结论及其意义。
+在相关章节展开必要推导；作者主要论证讲完之后再做独立评价。
+输出 Markdown 和离线 HTML，不开展额外浏览器或数值复现测试。
 ```
 
-```text
-使用 $astro-paper-reading，以 critical-review 模式分析这篇论文。
-重点解释核心结论依赖哪些观测约束和先验，以及什么证据能区分替代解释。
+研究生具有相应专业基础，报告无需把每个普通术语都展开为百科，但不能跳过决定核心方法和结论的推理。理论、观测、模拟研究按实际论文路线分别处理，不给所有论文套固定结构。
+
+## 脚本工作流（Agent 负责阅读）
+
+```sh
+python scripts/new_analysis.py "paper.pdf" --mode interactive-html --out WORK
+# Agent 阅读原论文，填 analysis.json 与读者文章；status 改为 ready
+python scripts/build_report.py --analysis WORK/analysis.json
+python scripts/validate_skill.py --analysis WORK/analysis.json --require-artifacts
 ```
 
-Agent 读取论文、核对证据、选择讲解重点并填写 `analysis.json`；Python 脚本负责校验和构建。脚本不会独立阅读论文或调用语言模型。
+只需 Markdown，两条构建/验证命令加 `--md-only`。`analysis.json` 包含科学证据和章节映射；`report.md`/`report.html` 面向读者；`analysis-notes.md` 放来源、关键参数、未知和执行记录。内置微透镜示意组件只在适合时通过 `--demo-data` 启用；其他论文不要为了使用组件而添加无关图形。离线 HTML 打开后不需要服务器或网络。
 
-| 产物 | 内容 |
-| --- | --- |
-| `report.md` | 面向读者的科学解释文章 |
-| `report.html` | 同一文章的离线阅读页面，包含选用的图片、MathML 与交互资产 |
-| `analysis.json` | 共享科学状态、原文定位、概览、章节地图与图形选择 |
-| `analysis-notes.md` | 独立的来源、证据、参数、覆盖与执行记录 |
+**日常交付到这里结束。** 只做一次合并式质量检查，确认与真实原文目录相符、关键物理/统计结论正确、主要原图解释清楚和文件生成成功。不要把 Skill 开发测试纳入每篇论文。
 
-生成的 HTML 可直接用现代浏览器打开；阅读与已嵌入控件不需要 Python、服务器或网络。论文获取与依赖安装需要相应资源访问。
+## 可选开发检查（不是读论文步骤）
 
-## 脚本工作流
-
-下面的命令从 Skill 根目录运行。`reading-work/` 是独立的阅读输出目录，也可指定绝对路径。
-
-```text
-python scripts/new_analysis.py "https://arxiv.org/abs/2311.13097" --mode interactive-html --out reading-work
-```
-
-草稿默认 `status=draft`。由 Agent 完成全文阅读、科学核查与 schema 1.1 的 `reader.overview`、`reader.roadmap`、`reader.focus`，并按 `reader`、`appendix`、`internal` 区分段落受众。所选图形通过 `visuals` 声明教学目的与本地资产。完成后设为 `ready`：
-
-```text
-python scripts/build_report.py --analysis reading-work/analysis.json
-python scripts/validate_skill.py --analysis reading-work/analysis.json --require-artifacts
-```
-
-仅需 Markdown 时，构建命令加 `--md-only`。使用内置微透镜组件时，按 manifest / section 配置图形，并传入 `--demo-data`。完整约定见 [阅读方法](references/reading-method.md)、[输出模式](references/output-modes.md)、[可视化规范](references/visualization.md) 与 [组件契约](references/component-contract.md)。
-
-## 开发与验证
-
-```text
+```sh
 python -m pip install -e ".[test]"
 python -m pytest -q
-python scripts/validate_skill.py
 python scripts/validate_numerics.py
-```
-
-离线组件回归夹具可本地生成并检查：
-
-```text
-python scripts/build_report.py --analysis examples/ogle-2016-blg-1928/analysis.json --demo-data examples/ogle-2016-blg-1928/demo-data.json
-python scripts/validate_skill.py --analysis examples/ogle-2016-blg-1928/analysis.json --require-artifacts --demo-data examples/ogle-2016-blg-1928/demo-data.json
 python scripts/browser_check.py
-```
-
-浏览器检查默认寻找 Windows Edge / Chrome；其他平台或浏览器路径可用 `--executable PATH` 指定，或在当前环境安装 Playwright Chromium。测试检查控件、数值一致性、键盘操作、窄屏排版和离线请求。检查记录保存在本地 `validation/`。
-
-该夹具保留 schema 1.0 的兼容性状态，供开发测试使用。其 77 个测光点为模拟数据；新论文阅读使用 schema 1.1。单透镜组件计算均匀源放大率，二元组件提供静态临界曲线与焦散；其他论文所需图形可通过 manifest 接入。科学计算实现沿用已验收版本，内部 Python 模块名保留 `astro_xray`。
-
-创建与核验便携安装包：
-
-```text
 python scripts/package_skill.py
-python scripts/check_release.py dist/astro-paper-reading-v1.1.skill.zip
 ```
 
-ZIP 顶层为 `astro-paper-reading/`，包含文件哈希清单。论文副本、生成报告、缓存及执行记录不属于源码提交。结构和数值检查之外，论文的科学准确性与阅读体验仍通过实际阅读和页面检查评估。
+这些命令用于修改了 Skill 结构、报告引擎、前端组件或数值算法后的专项回归。依赖不足时只运行可用的针对性测试，不能声称未运行的 HTML 测试通过；它们不是精读报告生成的前置条件。
 
-## 目录
+## 结构与参考
 
-```text
-SKILL.md        Agent 入口与阅读规则
-agents/         Skill 展示信息
-references/     阅读、科学完整性、领域、统计与可视化规范
-schemas/        analysis.json 结构
-astro_xray/     报告构建与微透镜数值基元
-assets/         离线 HTML 样式、脚本与教学组件
-scripts/        草稿、构建、检查与打包入口
-tests/          科学数值、状态、产物与前端回归测试
-examples/       数值组件测试夹具
-docs/           内容架构与设计说明
-upstream/       Paper X-Ray 设计参考、溯源与许可证
-```
+- [SKILL.md](SKILL.md) — Agent 必要指令与最短运行方式
+- [原文优先工作流](references/narrative-workflow.md) — 原文地图、正文映射、一次性检查
+- [读者体验](references/reader-experience.md)、[阅读方法](references/reading-method.md) — 分层解释与独立评价
+- [论文类型](references/paper-types.md)、[统计推断](references/statistics.md)、[微透镜](references/microlensing.md) — 天文领域按需参考
+- [组件契约](references/component-contract.md)、[可视化](references/visualization.md)、[质量检查](references/quality-gates.md) — 结构/图形/交付约定
+- `examples/ogle-2016-blg-1928/` — 已有微透镜数值教学测试夹具；`examples/paper-order-v13/` — 新的原文章序合成示例
 
-## 许可证与致谢
-
-代码与项目文档使用 [MIT License](LICENSE)。阅读方法与部分视觉设计参考 [Wang-auspicious / Paper X-Ray](https://github.com/Wang-auspicious/paper-xray)，保留其版权与许可证；来源与引用版本见 [upstream/provenance.json](upstream/provenance.json) 和 [设计说明](docs/DESIGN-AUDIT.md)。
-
-论文、原图及第三方科学数据遵循各自的授权。本仓库保存可复用 Skill、代码与合成教学数据，完整论文和个人阅读产物留在各自的阅读工作目录。
+代码和项目文档采用 [MIT 许可证](LICENSE)；相关上游设计和许可证见 [upstream/provenance.json](upstream/provenance.json)。论文、图片及天文数据的授权由其原始权利人决定；压缩包不包含论文全文。
